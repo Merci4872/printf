@@ -3,11 +3,11 @@
 void flushBuffer(char storage[], int *index);
 
 /**
-* custom_printf - Custom printf function.
+* _printf - Our version of the printf function.
 * @format: Format string with specifications.
 * Return: Number of characters printed.
 */
-int custom_printf(const char *format, ...)
+int _printf(const char *format, ...)
 {
 int iter, output, totalChars = 0, bufferIndex = 0;
 int flags, width, precision, size;
@@ -52,8 +52,8 @@ return (totalChars);
 
 /**
 * flushBuffer - Outputs buffer contents.
-* @storage: char array.
-* @index: pointer to current buffer position.
+* @storage: Char array.
+* @index: Pointer to current buffer position.
 */
 void flushBuffer(char storage[], int *index)
 {
@@ -61,4 +61,6 @@ if (*index > 0)
 write(1, storage, *index);
 *index = 0;
 }
+
+/* Add other helper functions here like fetchFlags, fetchWidth, etc. */
 
