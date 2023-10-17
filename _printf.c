@@ -1,14 +1,15 @@
-/* _printf.c */
 #include "main.h"
 #include <stdarg.h>
 
-/* Forward declaration for string print function */
+int _putchar(char c);
+int print_int(int n);
 int print_str(char *s);
 
 /**
-* _printf - Our custom printf
-* @format: string format
-* Return: char count
+* _printf - A function that produces output according to a format.
+* @format: The format string.
+*
+* Return: number of characters printed.
 */
 int _printf(const char *format, ...)
 {
@@ -23,9 +24,9 @@ va_start(args, format);
 while (format[i])
 {
 if (format[i] == '%' &&
-(format[i + 1] == 'c' ||
-format[i + 1] == 's' ||
-format[i + 1] == '%'))
+(format[i + 1] == 'c' || format[i + 1] == 's' ||
+format[i + 1] == '%' || format[i + 1] == 'd' ||
+format[i + 1] == 'i'))
 {
 i++;
 switch (format[i])
@@ -38,6 +39,10 @@ count += print_str(va_arg(args, char *));
 break;
 case '%':
 count += _putchar('%');
+break;
+case 'd':
+case 'i':
+count += print_int(va_arg(args, int));
 break;
 }
 }
@@ -54,20 +59,38 @@ return (count);
 }
 
 /**
-* print_str - Print string
-* @s: string
-* Return: char count
+* print_int - Prints an integer.
+* @n: The integer.
+*
+* Return: number of digits printed.
+*/
+int print_int(int n)
+{
+int count = 0;
+if (n < 0)
+{
+_putchar('-');
+n = -n;
+}
+if (n / 10)
+count += print_int(n / 10);
+_putchar(n % 10 + '0');
+return (count + 1);
+}
+
+/**
+* print_str - Prints a string.
+* @s: The string.
+*
+* Return: number of characters printed.
 */
 int print_str(char *s)
 {
 int i;
-
 if (!s)
-return (0);
-
+s = "(null)";
 for (i = 0; s[i]; i++)
 _putchar(s[i]);
-
 return (i);
 }
 
