@@ -1,13 +1,14 @@
 /* _printf.c */
 #include "main.h"
+#include <stdarg.h>
 
-/* Function prototype for print_str */
+/* Forward declaration for string print function */
 int print_str(char *s);
 
 /**
-* _printf - custom printf function
-* @format: string with format specifiers
-* Return: number of characters printed
+* _printf - Our custom printf
+* @format: string format
+* Return: char count
 */
 int _printf(const char *format, ...)
 {
@@ -21,21 +22,22 @@ va_start(args, format);
 
 while (format[i])
 {
-if (format[i] == '%' && (format[i + 1] == 'c' || format[i + 1] == 's' || format[i + 1] == '%'))
+if (format[i] == '%' &&
+(format[i + 1] == 'c' ||
+format[i + 1] == 's' ||
+format[i + 1] == '%'))
 {
-switch (format[i + 1])
+i++;
+switch (format[i])
 {
 case 'c':
 count += _putchar(va_arg(args, int));
-i++;
 break;
 case 's':
 count += print_str(va_arg(args, char *));
-i++;
 break;
 case '%':
 count += _putchar('%');
-i++;
 break;
 }
 }
@@ -48,14 +50,13 @@ i++;
 }
 
 va_end(args);
-
 return (count);
 }
 
 /**
-* print_str - prints a string
-* @s: string to print
-* Return: number of characters printed
+* print_str - Print string
+* @s: string
+* Return: char count
 */
 int print_str(char *s)
 {
