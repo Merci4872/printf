@@ -1,66 +1,96 @@
 #include "main.h"
+#include <stdarg.h>
 
-void flushBuffer(char storage[], int *index);
+int _putchar(char c);
+int print_int(int n);
+int print_str(char *s);
 
 /**
-* _printf - Our version of the printf function.
-* @format: Format string with specifications.
-* Return: Number of characters printed.
+* _printf - A function that produces output according to a format.
+* @format: The format string.
+*
+* Return: number of characters printed.
 */
 int _printf(const char *format, ...)
 {
-int iter, output, totalChars = 0, bufferIndex = 0;
-int flags, width, precision, size;
-va_list argsList;
-char outputBuffer[BUFF_SIZE];
+va_list args;
+unsigned int i = 0, count = 0;
 
 if (!format)
 return (-1);
 
-va_start(argsList, format);
+va_start(args, format);
 
-for (iter = 0; format[iter] != '\0'; iter++)
+while (format[i])
 {
-if (format[iter] != '%')
+if (format[i] == '%' &&
+(format[i + 1] == 'c' || format[i + 1] == 's' ||
+format[i + 1] == '%' || format[i + 1] == 'd' ||
+format[i + 1] == 'i'))
 {
-outputBuffer[bufferIndex++] = format[iter];
-if (bufferIndex == BUFF_SIZE)
-flushBuffer(outputBuffer, &bufferIndex);
-totalChars++;
+i++;
+switch (format[i])
+{
+case 'c':
+count += _putchar(va_arg(args, int));
+break;
+case 's':
+count += print_str(va_arg(args, char *));
+break;
+case '%':
+count += _putchar('%');
+break;
+case 'd':
+case 'i':
+count += print_int(va_arg(args, int));
+break;
+}
 }
 else
 {
-flushBuffer(outputBuffer, &bufferIndex);
-flags = fetchFlags(format, &iter);
-width = fetchWidth(format, &iter, argsList);
-precision = fetchPrecision(format, &iter, argsList);
-size = fetchSize(format, &iter);
-iter++;
-output = processSpecifiers(format, &iter, argsList,
-outputBuffer, flags, width,
-precision, size);
-if (output == -1)
-return (-1);
-totalChars += output;
+_putchar(format[i]);
+count++;
 }
+i++;
 }
 
-flushBuffer(outputBuffer, &bufferIndex);
-va_end(argsList);
-return (totalChars);
+va_end(args);
+return (count);
 }
 
 /**
-* flushBuffer - Outputs buffer contents.
-* @storage: Char array.
-* @index: Pointer to current buffer position.
+* print_int - Prints an integer.
+* @n: The integer.
+*
+* Return: number of digits printed.
 */
-void flushBuffer(char storage[], int *index)
+int print_int(int n)
 {
-if (*index > 0)
-write(1, storage, *index);
-*index = 0;
+int count = 0;
+if (n < 0)
+{
+_putchar('-');
+n = -n;
+}
+if (n / 10)
+count += print_int(n / 10);
+_putchar(n % 10 + '0');
+return (count + 1);
 }
 
-/* Add other helper functions here like fetchFlags, fetchWidth, etc. */
+/**
+* print_str - Prints a string.
+* @s: The string.
+*
+* Return: number of characters printed.
+*/
+int print_str(char *s)
+{
+int i;
+if (!s)
+s = "(null)";
+for (i = 0; s[i]; i++)
+_putchar(s[i]);
+return (i);
+}
 
